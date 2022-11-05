@@ -15,21 +15,21 @@ datasource db {
 }
 
 model Pool {
-  id          String        @id @default(cuid())
-  title       String
-  code        String        @unique
-  createdAt   DateTime      @default(now())
-  ownerId     String?
-  owner       User?         @relation(fields: [ownerId], references: [id])
-  Participant Participant[]
+  id           String        @id @default(cuid())
+  title        String
+  code         String        @unique
+  createdAt    DateTime      @default(now())
+  ownerId      String?
+  owner        User?         @relation(fields: [ownerId], references: [id])
+  participants Participant[]
 }
 
 model User {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   name      String
-  email     String  @unique
+  email     String   @unique
   avatarUrl String?
-
+  googleId  String?  @unique
   createdAt DateTime @default(now())
 
   participatingAt Participant[]
@@ -41,7 +41,7 @@ model Participant {
   userId String
   poolId String
   guess  Guess[]
-  User   User    @relation(fields: [userId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
   pool   Pool    @relation(fields: [poolId], references: [id])
 
   @@unique([userId, poolId])
@@ -66,4 +66,6 @@ model Guess {
 
   participant Participant @relation(fields: [participantId], references: [id])
   game        Game        @relation(fields: [gameId], references: [id])
+
+  @@unique([participantId, gameId])
 }
